@@ -60,7 +60,6 @@ with tab1:
                     st.session_state.calc_expr = st.session_state.calc_expr[:-1]
                 elif btn == '=':
                     try:
-                        # 💡 [해결 포인트] 글자가 잘리지 않고 완벽하게 매핑되도록 수정했습니다.
                         result = eval(st.session_state.calc_expr, {"__builtins__": None}, {"math": math, "np": np})
                         st.session_state.calc_expr = str(result)
                     except Exception:
@@ -85,6 +84,14 @@ with tab1:
 with tab2:
     st.subheader("📈 수학 함수 그리기")
     func_str = st.text_input("함수 f(x)를 입력하세요", value="x**2", key="graph_input")
+    
+    # 💡 [해결 포인트] 문제가 되었던 col1, col2 하단 블록의 들여쓰기를 공백 4칸으로 완벽히 정렬했습니다.
     col1, col2 = st.columns(2)
-    with col1: x_min = st.number_input("X 최소값", value=-10.0)
+    with col1:
+        x_min = st.number_input("X 최소값", value=-10.0)
     with col2:
+        x_max = st.number_input("X 최대값", value=10.0)
+
+    if st.button("그래프 생성", key="graph_btn"):
+        try:
+            x = np
