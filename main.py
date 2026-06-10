@@ -39,7 +39,7 @@ st.title("🧮 스마트 버튼 계산기 Pro")
 # 탭을 사용하여 기능 분리
 tab1, tab2 = st.tabs(["🔢 버튼 계산기", "📈 함수 그래프"])
 
-# 💡 [해결 포인트 1] 데이터 저장용 세션 상태 독립 초기화
+# 데이터 저장용 세션 상태 독립 초기화
 if 'calc_expr' not in st.session_state:
     st.session_state.calc_expr = ""
 
@@ -47,11 +47,11 @@ if 'calc_expr' not in st.session_state:
 with tab1:
     st.subheader("📝 수식 입력 및 계산")
 
-    # 💡 [해결 포인트 2] 사용자가 타이핑으로 수식을 직접 수정했을 때도 반영되도록 처리
+    # 사용자가 타이핑으로 수식을 직접 수정했을 때도 반영되도록 처리
     if "widget_display" in st.session_state:
         st.session_state.calc_expr = st.session_state.widget_display
 
-    # 💡 [해결 포인트 3] 위젯의 key를 "widget_display"로 분리하고, value에 실제 값을 바인딩합니다.
+    # 위젯의 key를 "widget_display"로 분리하고, value에 실제 값을 바인딩합니다.
     display = st.text_input(
         "현재 입력된 수식", 
         value=st.session_state.calc_expr, 
@@ -73,27 +73,11 @@ with tab1:
         for btn, col in zip(row, [c1, c2, c3, c4]):
             if col.button(btn, use_container_width=True, key=f"btn_{btn}"):
                 
-                # 💡 [해결 포인트 4] 버튼을 누르면 백엔드 데이터 변수만 안전하게 수정합니다.
+                # 버튼 클릭 시 백엔드 데이터 변수 안전하게 수정
                 if btn == 'C':
                     st.session_state.calc_expr = ""
                 elif btn == '←':
                     st.session_state.calc_expr = st.session_state.calc_expr[:-1]
                 elif btn == '=':
                     try:
-                        result = eval(st.session_state.calc_expr, {"__builtins__": None}, {"math": math, "np": np})
-                        st.session_state.calc_expr = str(result)
-                    except Exception:
-                        st.session_state.calc_expr = "Error"
-                elif btn == '로그':
-                    st.session_state.calc_expr += "math.log10("
-                else:
-                    st.session_state.calc_expr += btn
-                
-                # 수정된 데이터를 위젯 상자에 강제로 동기화해준 뒤 화면을 리런합니다.
-                st.session_state.widget_display = st.session_state.calc_expr
-                st.rerun()
-
-    st.write("") # 간격 띄우기
-
-    # 계산 실행 버튼
-    if st.
+                        result = eval(st
