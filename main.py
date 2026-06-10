@@ -4,79 +4,104 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 웹앱 제목 및 기본 설정
-st.set_page_config(page_title="스마트 다기능 계산기", page_icon="🧮", layout="centered")
-st.title("🧮 스마트 파이썬 계산기 Pro")
-st.write("단 하나의 수식 입력으로 모든 연산이 가능한 심플하고 강력한 계산기입니다.")
+st.set_page_config(page_title="클릭형 스마트 계산기", page_icon="🔘", layout="centered")
 
-# 탭을 사용하여 기능 분리 (계산기 / 그래프)
-tab1, tab2 = st.tabs(["🔢 스마트 계산기", "📈 함수 그래프"])
+# --- 스타일 설정 (버튼을 예쁘게 만들기 위해) ---
+st.markdown("""
+    <style>
+    div.stButton > button {
+        width: 100%;
+        height: 60px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-# --- Tab 1: 일반 및 다중 계산기 로직 (초간단 단순화) ---
+st.title("🔘 클릭형 스마트 계산기")
+st.write("버튼을 눌러 수식을 완성하세요. 타이핑할 필요가 없어 훨씬 편합니다!")
+
+# 세션 상태 초기화 (입력된 수식을 저장하는 창고)
+if 'calc_input' not in st.session_state:
+    st.session_state.calc_input = ""
+
+# 탭 구성
+tab1, tab2 = st.tabs(["🔢 버튼 계산기", "📈 함수 그래프"])
+
+# --- Tab 1: 버튼 클릭형 계산기 ---
 with tab1:
-    st.subheader("📝 계산할 수식 입력")
-    st.write("사칙연산, 다중 연산, 괄호, 수학 함수를 자유롭게 입력하세요.")
-    
-    # 헬프 가이드 (동작 방식 안내)
-    with st.expander("💡 사용 가능한 수식 예시 보기"):
-        st.markdown("""
-        * **기본/다중 사칙연산:** `10 + 20 * 3 / 2` (우선순위 자동 적용)
-        * **괄호 연산:** `(10 + 20) * 3`
-        * **거듭제곱 (제곱):** `2**3` (2의 3제곱 = 8)
-        * **로그 및 수학 연산:** `math.log10(100)` 또는 `math.log(8, 2)` (밑이 2인 로그 8)
-        * **원주율/삼각함수:** `math.pi`, `math.sin(math.pi/2)`
-        """)
+    # 1. 현재 입력창 (수정 가능하게 텍스트 박스로 유지하되 세션과 연동)
+    current_expr = st.text_input("수식 입력창", value=st.session_state.calc_input, key="display")
 
-    # 단 하나의 텍스트 입력창으로 모든 연산 통합
-    calc_str = st.text_input("수식을 입력하세요", value="(10 + 20) * 3 - 50", key="smart_calc_input")
-    
-    if st.button("계산 실행", type="primary", key="smart_calc_btn"):
-        if calc_str.strip() == "":
-            st.warning("⚠️ 수식을 입력해 주세요.")
-        else:
-            try:
-                # 안전한 계산 환경을 위해 화이트리스트 제공
-                # 사용자가 math.log, math.sqrt, np.sqrt 등을 자유롭게 쓸 수 있게 바인딩
-                allowed_names = {"math": math, "np": np}
-                
-                # 수식 자동 계산
-                result = eval(calc_str, {"__builtins__": None}, allowed_names)
-                
-                # 성공 메시지 출력
-                st.success(f"📊 **계산 결과:** `{calc_str}` = **{result}**")
-                
-            except ZeroDivisionError:
-                st.error("⚠️ 0으로 나눌 수 없습니다. 수식을 확인해 주세요.")
-            except NameError as ne:
-                st.error(f"⚠️ 인식할 수 없는 문자나 함수가 있습니다. (예: 곱하기는 `*`, 거듭제곱은 `**` 로 입력해야 합니다.)")
-            except Exception as e:
-                st.error(f"⚠️ 수식에 오류가 있습니다. 입력 내용을 확인해 주세요. (에러: {e})")
+    # 2. 버튼 배치 (4x5 그리드)
+    # 첫 번째 줄: 지우기, 괄호, 나누기
+    c1, c2, c3, c4 = st.columns(4)
+    if c1.button("C", help="모두 지우기"):
+        st.session_state.calc_input = ""
+        st.rerun()
+    if c2.button("("): st.session_state.calc_input += "("; st.rerun()
+    if c3.button(")"): st.session_state.calc_input += ")"; st.rerun()
+    if c4.button("÷"): st.session_state.calc_input += "/"; st.rerun()
 
-# --- Tab 2: 그래프 그리기 로직 (기존 코드 유지) ---
+    # 두 번째 줄: 7, 8, 9, 곱하기
+    c1, c2, c3, c4 = st.columns(4)
+    if c1.button("7"): st.session_state.calc_input += "7"; st.rerun()
+    if c2.button("8"): st.session_state.calc_input += "8"; st.rerun()
+    if c3.button("9"): st.session_state.calc_input += "9"; st.rerun()
+    if c4.button("×"): st.session_state.calc_input += "*"; st.rerun()
+
+    # 세 번째 줄: 4, 5, 6, 빼기
+    c1, c2, c3, c4 = st.columns(4)
+    if c1.button("4"): st.session_state.calc_input += "4"; st.rerun()
+    if c2.button("5"): st.session_state.calc_input += "5"; st.rerun()
+    if c3.button("6"): st.session_state.calc_input += "6"; st.rerun()
+    if c4.button("-"): st.session_state.calc_input += "-"; st.rerun()
+
+    # 네 번째 줄: 1, 2, 3, 더하기
+    c1, c2, c3, c4 = st.columns(4)
+    if c1.button("1"): st.session_state.calc_input += "1"; st.rerun()
+    if c2.button("2"): st.session_state.calc_input += "2"; st.rerun()
+    if c3.button("3"): st.session_state.calc_input += "3"; st.rerun()
+    if c4.button("+"): st.session_state.calc_input += "+"; st.rerun()
+
+    # 다섯 번째 줄: 0, 점, 제곱, 계산(=)
+    c1, c2, c3, c4 = st.columns(4)
+    if c1.button("0"): st.session_state.calc_input += "0"; st.rerun()
+    if c2.button("."): st.session_state.calc_input += "."; st.rerun()
+    if c3.button("x²"): st.session_state.calc_input += "**2"; st.rerun()
+    if c4.button("=", type="primary"):
+        try:
+            # 안전하게 수식 계산
+            allowed_names = {"math": math, "np": np}
+            result = eval(st.session_state.calc_input, {"__builtins__": None}, allowed_names)
+            st.success(f"**결과: {result}**")
+            st.session_state.calc_input = str(result) # 다음 계산을 위해 결과를 입력창에 유지
+        except Exception as e:
+            st.error("⚠️ 잘못된 수식입니다.")
+
+    # 추가 기능 (로그/루트 등)
+    with st.expander("➕ 고급 연산 버튼"):
+        ac1, ac2, ac3 = st.columns(3)
+        if ac1.button("√ (루트)"): st.session_state.calc_input += "math.sqrt("; st.rerun()
+        if ac2.button("log10"): st.session_state.calc_input += "math.log10("; st.rerun()
+        if ac3.button("π (파이)"): st.session_state.calc_input += "math.pi"; st.rerun()
+
+# --- Tab 2: 그래프 그리기 로직 (기존 유지) ---
 with tab2:
     st.subheader("📈 수학 함수 그리기")
-    st.info("예시: np.sin(x), x**2, np.log(x), 3*x + 2")
-    
-    # 수식 입력
     func_str = st.text_input("함수 f(x)를 입력하세요", value="x**2")
-    
-    # X축 범위 설정
     col1, col2 = st.columns(2)
     with col1: x_min = st.number_input("X 최소값", value=-10.0)
     with col2: x_max = st.number_input("X 최대값", value=10.0)
 
-    if st.button("그래프 생성", key="graph_gen_btn"):
+    if st.button("그래프 생성"):
         try:
             x = np.linspace(x_min, x_max, 500)
-            # 안전하게 수식 계산
             y = eval(func_str, {"__builtins__": None}, {"np": np, "x": x, "math": math})
-            
             fig, ax = plt.subplots()
-            ax.plot(x, y, label=f"f(x) = {func_str}", color="#22c55e", linewidth=2)
-            ax.axhline(0, color='black', lw=1)
-            ax.axvline(0, color='black', lw=1)
-            ax.grid(True, linestyle='--', alpha=0.6)
-            ax.legend()
-            
+            ax.plot(x, y, label=f"f(x) = {func_str}", color="#22c55e")
+            ax.axhline(0, color='black', lw=1); ax.axvline(0, color='black', lw=1)
+            ax.grid(True, linestyle=':', alpha=0.6)
             st.pyplot(fig)
         except Exception as e:
-            st.error(f"🚨 그래프를 그릴 수 없습니다: {e}")
+            st.error(f"🚨 그래프 에러: {e}")
