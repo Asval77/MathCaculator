@@ -1,104 +1,74 @@
 import math
 import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
 
 # 웹앱 제목 및 기본 설정
-st.set_page_config(page_title="다기능 계산기", page_icon="🧮", layout="centered")
-st.title("🧮 다기능 파이썬 계산기")
-st.write("사칙연산부터 로그연산까지 지원하는 깔끔한 스트림릿 계산기입니다.")
+st.set_page_config(page_title="다기능 계산기 & 그래프", page_icon="🧮", layout="centered")
+st.title("🧮 다기능 파이썬 계산기 Pro")
+st.write("사칙연산부터 함수 그래프 시각화까지 지원하는 강력한 계산기입니다.")
 
-st.divider()
+# 탭을 사용하여 기능 분리 (계산기 / 그래프)
+tab1, tab2 = st.tabs(["🔢 일반 계산기", "📈 함수 그래프"])
 
-# 1. 연산 종류 선택 메뉴
-operation = st.selectbox(
-    "원하는 연산을 선택하세요",
-    [
-        "더하기 (+)",
-        "빼기 (-)",
-        "곱하기 (*)",
-        "나누기 (/)",
-        "나머지 연산 (Modulus, %)",
-        "지수 연산 (Power, ^)",
-        "로그 연산 (Logarithm)",
-    ],
-)
+# --- Tab 1: 일반 계산기 로직 ---
+with tab1:
+    operation = st.selectbox(
+        "원하는 연산을 선택하세요",
+        ["더하기 (+)", "빼기 (-)", "곱하기 (*)", "나누기 (/)", "나머지 (%)", "지수 (^)", "로그 (Log)"]
+    )
 
-st.subheader(f"🔍 {operation} 수행 중")
+    if operation in ["더하기 (+)", "빼기 (-)", "곱하기 (*)", "나누기 (/)", "나머지 (%)", "지수 (^)"]:
+        num1 = st.number_input("첫 번째 숫자(X)", value=0.0)
+        num2 = st.number_input("두 번째 숫자(Y)", value=0.0)
+        
+        if st.button("계산 실행", key="calc_btn"):
+            if operation == "더하기 (+)": st.success(f"결과: {num1 + num2}")
+            elif operation == "빼기 (-)": st.success(f"결과: {num1 - num2}")
+            elif operation == "곱하기 (*)": st.success(f"결과: {num1 * num2}")
+            elif operation == "나누기 (/)":
+                if num2 != 0: st.success(f"결과: {num1 / num2}")
+                else: st.error("0으로 나눌 수 없습니다.")
+            elif operation == "나머지 (%)": st.success(f"결과: {num1 % num2}")
+            elif operation == "지수 (^)": st.success(f"결과: {math.pow(num1, num2)}")
 
-# 2. 연산별 입력 및 계산 로직
-# 두 개의 숫자 입력이 필요한 기본 연산들
-if operation in [
-    "더하기 (+)",
-    "빼기 (-)",
-    "곱하기 (*)",
-    "나누기 (/)",
-    "나머지 연산 (Modulus, %)",
-    "지수 연산 (Power, ^)",
-]:
-    num1 = st.number_input("첫 번째 숫자를 입력하세요 (X)", value=0.0, format="%f")
-    num2 = st.number_input("두 번째 숫자를 입력하세요 (Y)", value=0.0, format="%f")
-
-    if st.button("계산하기"):
-        if operation == "더하기 (+)":
-            result = num1 + num2
-            st.success(f"결과: {num1} + {num2} = **{result}**")
-
-        elif operation == "빼기 (-)":
-            result = num1 - num2
-            st.success(f"결과: {num1} - {num2} = **{result}**")
-
-        elif operation == "곱하기 (*)":
-            result = num1 * num2
-            st.success(f"결과: {num1} × {num2} = **{result}**")
-
-        elif operation == "나누기 (/)":
-            if num2 == 0:
-                st.error("⚠️ 0으로 나눌 수 없습니다!")
+    elif operation == "로그 (Log)":
+        x = st.number_input("진수(X)", value=1.0)
+        base = st.number_input("밑(Base)", value=10.0)
+        if st.button("로그 계산"):
+            if x > 0 and base > 0 and base != 1:
+                st.success(f"결과: {math.log(x, base)}")
             else:
-                result = num1 / num2
-                st.success(f"결과: {num1} ÷ {num2} = **{result}**")
+                st.error("입력값이 로그 조건을 만족하지 않습니다.")
 
-        elif operation == "나머지 연산 (Modulus, %)":
-            if num2 == 0:
-                st.error("⚠️ 0으로 나머지 연산을 할 수 없습니다!")
-            else:
-                result = num1 % num2
-                st.success(f"결과: {num1} % {num2} = **{result}**")
+# --- Tab 2: 그래프 그리기 로직 ---
+with tab2:
+    st.subheader("📈 수학 함수 그리기")
+    st.info("예시: np.sin(x), x**2, np.log(x), 3*x + 2")
+    
+    # 수식 입력
+    func_str = st.text_input("함수 f(x)를 입력하세요", value="x**2")
+    
+    # X축 범위 설정
+    col1, col2 = st.columns(2)
+    with col1: x_min = st.number_input("X 최소값", value=-10.0)
+    with col2: x_max = st.number_input("X 최대값", value=10.0)
 
-        elif operation == "지수 연산 (Power, ^)":
-            try:
-                result = math.pow(num1, num2)
-                st.success(f"결과: {num1} ^ {num2} = **{result}**")
-            except OverflowError:
-                st.error("⚠️ 결과값이 너무 커서 계산할 수 없습니다 (오버플로우).")
-            except ValueError:
-                st.error("⚠️ 잘못된 연산입니다 (예: 음수의 소수점 제곱).")
+    if st.button("그래프 생성"):
+        try:
+            x = np.linspace(x_min, x_max, 500)
+            # 안전하게 수식 계산
+            y = eval(func_str, {"np": np, "x": x, "math": math})
+            
+            fig, ax = plt.subplots()
+            ax.plot(x, y, label=f"f(x) = {func_str}", color="#22c55e", linewidth=2)
+            ax.axhline(0, color='black', lw=1)
+            ax.axvline(0, color='black', lw=1)
+            ax.grid(True, linestyle='--', alpha=0.6)
+            ax.legend()
+            
+            st.pyplot(fig)
+        except Exception as e:
+            st.error(f"그래프를 그릴 수 없습니다: {e}")
 
-# 로그 연산 (밑과 진수 입력 조건이 다름)
-elif operation == "로그 연산 (Logarithm)":
-    log_type = st.radio("로그 종류 선택", ["상용로그 (밑 10)", "자연로그 (밑 e)", "사용자 지정 밑"])
-
-    if log_type == "상용로그 (밑 10)":
-        x = st.number_input("진수를 입력하세요 (X > 0)", value=1.0, format="%f")
-        if st.button("계산하기"):
-            if x <= 0:
-                st.error("⚠️ 진수는 0보다 커야 합니다.")
-            else:
-                st.success(f"결과: log10({x}) = **{math.log10(x)}**")
-
-    elif log_type == "자연로그 (밑 e)":
-        x = st.number_input("진수를 입력하세요 (X > 0)", value=1.0, format="%f")
-        if st.button("계산하기"):
-            if x <= 0:
-                st.error("⚠️ 진수는 0보다 커야 합니다.")
-            else:
-                st.success(f"결과: ln({x}) = **{math.log(x)}**")
-
-    elif log_type == "사용자 지정 밑":
-        x = st.number_input("진수를 입력하세요 (X > 0)", value=1.0, format="%f")
-        base = st.number_input(
-            "밑을 입력하세요 (Base > 0, Base ≠ 1)", value=2.0, format="%f"
-        )
-        if st.button("계산하기"):
-            if x <= 0:
-                st.error("⚠️ 진수는 0보다 커야 합니다.")
-            elif base <= 0 or base == 1:
+**💡 팁:** 깃허브에 올리실 때 `requirements.txt` 파일에 `numpy`와 `matplotlib`을 반드시 추가해 주세요! 궁금한 점이 있으시면 언제든 말씀해 주세요.
