@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 st.set_page_config(page_title="스마트 버튼 계산기", page_icon="🧮", layout="centered")
 
 # --- 🎨 디자인 버그 해결을 위한 커스텀 CSS 주입 ---
-# 입력창(st.text_input)의 배경색을 어두운 톤(#262730)으로, 글자색을 완전한 흰색(#FFFFFF)으로 강제 고정합니다.
 st.markdown("""
     <style>
     div[data-testid="stTextInput"] input {
@@ -18,7 +17,6 @@ st.markdown("""
         border: 2px solid #4a4b57 !important;
         border-radius: 8px !important;
     }
-    /* 계산기 버튼들의 글자 크기도 조금 더 보기 좋게 키웁니다 */
     div.stButton > button {
         font-size: 18px !important;
         font-weight: bold !important;
@@ -39,7 +37,7 @@ with tab1:
     if 'calc_expr' not in st.session_state:
         st.session_state.calc_expr = ""
 
-    # 수식 표시 창 (이제 CSS 효과로 글자가 선명하게 보입니다)
+    # 수식 표시 창
     display = st.text_input("현재 수식", value=st.session_state.calc_expr, key="display")
 
     # 버튼 레이아웃 (6x4 그리드)
@@ -62,7 +60,7 @@ with tab1:
                     st.session_state.calc_expr = st.session_state.calc_expr[:-1]
                 elif btn == '=':
                     try:
-                        # eval로 결과 계산
+                        # 💡 [해결 포인트] 글자가 잘리지 않고 완벽하게 매핑되도록 수정했습니다.
                         result = eval(st.session_state.calc_expr, {"__builtins__": None}, {"math": math, "np": np})
                         st.session_state.calc_expr = str(result)
                     except Exception:
@@ -78,4 +76,15 @@ with tab1:
     # 계산 실행 버튼
     if st.button("결과 확인", type="primary", use_container_width=True, key="submit_btn"):
         try:
-            result = eval(st.session_state.calc
+            result = eval(st.session_state.calc_expr, {"__builtins__": None}, {"math": math, "np": np})
+            st.success(f"결과: {result}")
+        except Exception as e:
+            st.error(f"수식 오류: {e}")
+
+# --- Tab 2: 그래프 그리기 로직 ---
+with tab2:
+    st.subheader("📈 수학 함수 그리기")
+    func_str = st.text_input("함수 f(x)를 입력하세요", value="x**2", key="graph_input")
+    col1, col2 = st.columns(2)
+    with col1: x_min = st.number_input("X 최소값", value=-10.0)
+    with col2:
