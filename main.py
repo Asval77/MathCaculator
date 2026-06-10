@@ -85,7 +85,6 @@ with tab2:
     st.subheader("📈 수학 함수 그리기")
     func_str = st.text_input("함수 f(x)를 입력하세요", value="x**2", key="graph_input")
     
-    # 💡 [해결 포인트] 문제가 되었던 col1, col2 하단 블록의 들여쓰기를 공백 4칸으로 완벽히 정렬했습니다.
     col1, col2 = st.columns(2)
     with col1:
         x_min = st.number_input("X 최소값", value=-10.0)
@@ -94,4 +93,16 @@ with tab2:
 
     if st.button("그래프 생성", key="graph_btn"):
         try:
-            x = np
+            # 💡 [해결 포인트] 도중에 끊겼던 try 블록 내부 코드를 온전하게 복구했습니다.
+            x = np.linspace(x_min, x_max, 500)
+            y = eval(func_str, {"__builtins__": None}, {"np": np, "x": x, "math": math})
+            
+            fig, ax = plt.subplots()
+            ax.plot(x, y, label=f"f(x) = {func_str}", color="#22c55e", linewidth=2)
+            ax.axhline(0, color='black', lw=1)
+            ax.axvline(0, color='black', lw=1)
+            ax.grid(True, linestyle='--', alpha=0.6)
+            ax.legend()
+            st.pyplot(fig)
+        except Exception as e:
+            st.error(f"그래프 오류: {e}")
