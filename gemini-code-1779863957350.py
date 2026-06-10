@@ -70,5 +70,3 @@ with tab2:
             st.pyplot(fig)
         except Exception as e:
             st.error(f"그래프를 그릴 수 없습니다: {e}")
-
-**💡 팁:** 깃허브에 올리실 때 `requirements.txt` 파일에 `numpy`와 `matplotlib`을 반드시 추가해 주세요! 궁금한 점이 있으시면 언제든 말씀해 주세요.
