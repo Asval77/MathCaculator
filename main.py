@@ -6,20 +6,30 @@ import matplotlib.pyplot as plt
 # 웹앱 제목 및 기본 설정
 st.set_page_config(page_title="스마트 버튼 계산기", page_icon="🧮", layout="centered")
 
-# --- 🎨 디자인 버그 해결을 위한 커스텀 CSS 주입 ---
+# --- 🎨 테마에 영향을 받지 않도록 강력한 커스텀 CSS 주입 ---
 st.markdown("""
     <style>
+    /* 입력창 배경을 완전한 검은색(#000000)으로, 글자를 선명한 노란색(#FFD700)으로 강제 고정 */
     div[data-testid="stTextInput"] input {
-        color: #FFFFFF !important;
-        background-color: #262730 !important;
-        font-size: 22px !important;
+        color: #FFD700 !important;
+        background-color: #000000 !important;
+        font-size: 26px !important;
         font-weight: bold !important;
-        border: 2px solid #4a4b57 !important;
-        border-radius: 8px !important;
+        border: 3px solid #22c55e !important;
+        border-radius: 10px !important;
+        padding: 15px !important;
     }
-    div.stButton > button {
-        font-size: 18px !important;
+    /* 입력창 상단의 레이블 글자색을 흰색으로 고정 */
+    div[data-testid="stTextInput"] label p {
+        color: #FFFFFF !important;
+        font-size: 16px !important;
         font-weight: bold !important;
+    }
+    /* 계산기 버튼 글자 스타일 설정 */
+    div.stButton > button {
+        font-size: 20px !important;
+        font-weight: bold !important;
+        height: 55px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -37,8 +47,8 @@ with tab1:
     if 'calc_expr' not in st.session_state:
         st.session_state.calc_expr = ""
 
-    # 수식 표시 창
-    display = st.text_input("현재 수식", value=st.session_state.calc_expr, key="display")
+    # 수식 표시 창 (강력한 CSS 적용)
+    display = st.text_input("현재 입력된 수식", value=st.session_state.calc_expr, key="display")
 
     # 버튼 레이아웃 (6x4 그리드)
     buttons = [
@@ -93,7 +103,6 @@ with tab2:
 
     if st.button("그래프 생성", key="graph_btn"):
         try:
-            # 💡 [해결 포인트] 도중에 끊겼던 try 블록 내부 코드를 온전하게 복구했습니다.
             x = np.linspace(x_min, x_max, 500)
             y = eval(func_str, {"__builtins__": None}, {"np": np, "x": x, "math": math})
             
