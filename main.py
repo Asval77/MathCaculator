@@ -25,7 +25,7 @@ st.markdown("""
     
     /* 텍스트 입력창 */
     div[data-testid="stTextInput"] input {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         background-color: rgba(255, 255, 255, 0.15) !important;
         font-size: 26px !important;
         font-weight: bold !important;
@@ -36,18 +36,18 @@ st.markdown("""
     }
     
     div[data-testid="stTextInput"] input::placeholder {
-        color: rgba(255, 255, 255, 0.6) !important;
+        color: rgba(0, 0, 0, 0.6) !important;
     }
     
     div[data-testid="stTextInput"] label p {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         font-size: 16px !important;
         font-weight: bold !important;
     }
     
     /* 버튼 스타일 */
     div.stButton > button {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         background-color: rgba(255, 255, 255, 0.2) !important;
         font-size: 20px !important;
         font-weight: bold !important;
@@ -68,6 +68,7 @@ st.markdown("""
     div.stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%) !important;
         border: none !important;
+        color: #000000 !important;
     }
     
     div.stButton > button[kind="primary"]:hover {
@@ -80,36 +81,36 @@ st.markdown("""
     }
     
     button[data-baseweb="tab"] {
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: rgba(0, 0, 0, 0.7) !important;
         background-color: transparent !important;
         border-bottom: 2px solid transparent !important;
         font-weight: 600 !important;
     }
     
     button[data-baseweb="tab"]:hover {
-        color: #FFFFFF !important;
-        border-bottom: 2px solid rgba(255, 255, 255, 0.5) !important;
+        color: #000000 !important;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.5) !important;
     }
     
     button[aria-selected="true"][data-baseweb="tab"] {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         border-bottom: 2px solid #00d4ff !important;
     }
     
     /* 제목 스타일 */
     h1, h2, h3 {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
     }
     
     /* 일반 텍스트 */
     p, span, label {
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     
     /* Number 입력 */
     div[data-testid="stNumberInput"] input {
-        color: #FFFFFF !important;
+        color: #000000 !important;
         background-color: rgba(255, 255, 255, 0.15) !important;
         border: 2px solid rgba(255, 255, 255, 0.3) !important;
         border-radius: 10px !important;
@@ -121,14 +122,14 @@ st.markdown("""
         background-color: rgba(34, 197, 94, 0.2) !important;
         border: 2px solid rgba(34, 197, 94, 0.5) !important;
         border-radius: 10px !important;
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     
     .stError {
         background-color: rgba(239, 68, 68, 0.2) !important;
         border: 2px solid rgba(239, 68, 68, 0.5) !important;
         border-radius: 10px !important;
-        color: #FFFFFF !important;
+        color: #000000 !important;
     }
     
     /* 컬럼 배경 */
