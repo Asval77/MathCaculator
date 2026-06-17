@@ -5,27 +5,135 @@ import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="스마트 버튼 계산기", page_icon="🧮", layout="centered")
 
-# --- 🎨 화면 테마에 영향을 받지 않는 선명한 커스텀 CSS ---
+# --- 🎨 아름다운 그래디언트 배경과 현대적인 디자인 ---
 st.markdown("""
     <style>
+    /* 메인 배경: 그래디언트 (보라색 → 파란색) */
+    .stApp {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #4c63d2 50%, #2e5090 75%, #1a237e 100%);
+        background-attachment: fixed;
+    }
+    
+    /* 컨테이너 배경 */
+    [data-testid="stAppViewContainer"] {
+        background-color: transparent;
+    }
+    
+    [data-testid="stHeader"] {
+        background-color: transparent;
+    }
+    
+    /* 텍스트 입력창 */
     div[data-testid="stTextInput"] input {
-        color: #FFD700 !important;
-        background-color: #000000 !important;
+        color: #FFFFFF !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
         font-size: 26px !important;
         font-weight: bold !important;
-        border: 3px solid #22c55e !important;
-        border-radius: 10px !important;
+        border: 2px solid rgba(255, 255, 255, 0.4) !important;
+        border-radius: 15px !important;
         padding: 15px !important;
+        backdrop-filter: blur(10px) !important;
     }
+    
+    div[data-testid="stTextInput"] input::placeholder {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+    
     div[data-testid="stTextInput"] label p {
         color: #FFFFFF !important;
         font-size: 16px !important;
         font-weight: bold !important;
     }
+    
+    /* 버튼 스타일 */
     div.stButton > button {
+        color: #FFFFFF !important;
+        background-color: rgba(255, 255, 255, 0.2) !important;
         font-size: 20px !important;
         font-weight: bold !important;
         height: 55px !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    div.stButton > button:hover {
+        background-color: rgba(255, 255, 255, 0.35) !important;
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Primary 버튼 (결과 확인) */
+    div.stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099ff 100%) !important;
+        border: none !important;
+    }
+    
+    div.stButton > button[kind="primary"]:hover {
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5) !important;
+    }
+    
+    /* Tab 스타일 */
+    [data-testid="stTabs"] {
+        background-color: transparent;
+    }
+    
+    button[data-baseweb="tab"] {
+        color: rgba(255, 255, 255, 0.7) !important;
+        background-color: transparent !important;
+        border-bottom: 2px solid transparent !important;
+        font-weight: 600 !important;
+    }
+    
+    button[data-baseweb="tab"]:hover {
+        color: #FFFFFF !important;
+        border-bottom: 2px solid rgba(255, 255, 255, 0.5) !important;
+    }
+    
+    button[aria-selected="true"][data-baseweb="tab"] {
+        color: #FFFFFF !important;
+        border-bottom: 2px solid #00d4ff !important;
+    }
+    
+    /* 제목 스타일 */
+    h1, h2, h3 {
+        color: #FFFFFF !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* 일반 텍스트 */
+    p, span, label {
+        color: #FFFFFF !important;
+    }
+    
+    /* Number 입력 */
+    div[data-testid="stNumberInput"] input {
+        color: #FFFFFF !important;
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        border-radius: 10px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Success/Error 메시지 */
+    .stSuccess {
+        background-color: rgba(34, 197, 94, 0.2) !important;
+        border: 2px solid rgba(34, 197, 94, 0.5) !important;
+        border-radius: 10px !important;
+        color: #FFFFFF !important;
+    }
+    
+    .stError {
+        background-color: rgba(239, 68, 68, 0.2) !important;
+        border: 2px solid rgba(239, 68, 68, 0.5) !important;
+        border-radius: 10px !important;
+        color: #FFFFFF !important;
+    }
+    
+    /* 컬럼 배경 */
+    [data-testid="column"] {
+        background-color: transparent !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -94,10 +202,18 @@ with tab2:
         try:
             x = np.linspace(x_min, x_max, 500)
             y = eval(func_str, {"__builtins__": None}, {"np": np, "x": x, "math": math})
-            fig, ax = plt.subplots()
-            ax.plot(x, y, label=f"f(x) = {func_str}", color="#22c55e", linewidth=2)
-            ax.axhline(0, color='black', lw=1); ax.axvline(0, color='black', lw=1)
-            ax.grid(True, linestyle='--', alpha=0.6); ax.legend()
+            fig, ax = plt.subplots(facecolor='rgba(0,0,0,0)')
+            ax.plot(x, y, label=f"f(x) = {func_str}", color="#00d4ff", linewidth=3)
+            ax.axhline(0, color='rgba(255,255,255,0.3)', lw=1.5)
+            ax.axvline(0, color='rgba(255,255,255,0.3)', lw=1.5)
+            ax.grid(True, linestyle='--', alpha=0.2, color='white')
+            ax.legend(facecolor='rgba(0,0,0,0.3)', edgecolor='white', labelcolor='white')
+            ax.set_facecolor('rgba(0,0,0,0.1)')
+            ax.tick_params(colors='white')
+            ax.spines['bottom'].set_color('white')
+            ax.spines['left'].set_color('white')
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
             st.pyplot(fig)
         except Exception as e:
             st.error(f"그래프 오류: {e}")
