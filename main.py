@@ -199,14 +199,33 @@ with tab2:
     with col1: x_min = st.number_input("X 최소값", value=-10.0)
     with col2: x_max = st.number_input("X 최대값", value=10.0)
 
+    # 초기 그래프 (빈 xy축)
+    fig, ax = plt.subplots(figsize=(8, 6), facecolor='rgba(0,0,0,0)')
+    
+    # xy축 미리 그리기
+    x = np.linspace(x_min, x_max, 500)
+    ax.axhline(0, color='rgba(255,255,255,0.5)', lw=2, label='Y axis')
+    ax.axvline(0, color='rgba(255,255,255,0.5)', lw=2, label='X axis')
+    ax.grid(True, linestyle='--', alpha=0.2, color='white')
+    ax.set_facecolor('rgba(0,0,0,0.1)')
+    ax.tick_params(colors='white')
+    ax.spines['bottom'].set_color('white')
+    ax.spines['left'].set_color('white')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.set_xlim(x_min, x_max)
+    
+    # 그래프 미리 표시
+    graph_placeholder = st.pyplot(fig)
+
     if st.button("그래프 생성", key="graph_btn"):
         try:
             x = np.linspace(x_min, x_max, 500)
             y = eval(func_str, {"__builtins__": None}, {"np": np, "x": x, "math": math})
-            fig, ax = plt.subplots(facecolor='rgba(0,0,0,0)')
+            fig, ax = plt.subplots(figsize=(8, 6), facecolor='rgba(0,0,0,0)')
             ax.plot(x, y, label=f"f(x) = {func_str}", color="#00d4ff", linewidth=3)
-            ax.axhline(0, color='rgba(255,255,255,0.3)', lw=1.5)
-            ax.axvline(0, color='rgba(255,255,255,0.3)', lw=1.5)
+            ax.axhline(0, color='rgba(255,255,255,0.5)', lw=2)
+            ax.axvline(0, color='rgba(255,255,255,0.5)', lw=2)
             ax.grid(True, linestyle='--', alpha=0.2, color='white')
             ax.legend(facecolor='rgba(0,0,0,0.3)', edgecolor='white', labelcolor='white')
             ax.set_facecolor('rgba(0,0,0,0.1)')
